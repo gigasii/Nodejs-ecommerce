@@ -9,7 +9,6 @@ const path = require('path');
 const adminRoutes = require('./routes/admin');
 const shopRoutes = require('./routes/shop');
 const errorController = require('./controllers/error');
-const db = require('./database');
 
 // Initilization
 const app = express();
@@ -30,11 +29,6 @@ app.use(shopRoutes);
 
 // Error handling middleware
 app.use(errorController.get404);
-
-// Execute queries to database
-db.execute('SELECT * FROM products')
-.then(result => console.log(result[0]))
-.catch(err => console.log(err));
 
 // Server constantly listening
 app.listen(3000);

@@ -34,13 +34,14 @@ exports.getEditProduct = (req, res, next) => {
 }
 
 exports.postAddProduct = (req, res, next) => {
-    const newProduct = new Product(null, req.body.title, req.body.imageURL, req.body.description, req.body.price);
-    newProduct.save();
-    res.redirect('/products');
+    const newProduct = new Product(req.body.title, req.body.imageURL, req.body.description, req.body.price);
+    newProduct.save()
+    .then(() => res.redirect('/products'))
+    .catch(err => console.log(err));
 }
 
 exports.postEditProduct = (req, res, next) => {
-    const updatedProduct = new Product(req.body.productID, req.body.title, req.body.imageURL, req.body.description, req.body.price);
+    const updatedProduct = new Product(req.body.title, req.body.imageURL, req.body.description, req.body.price);
     updatedProduct.save();
     res.redirect('/admin/product-list');
 }
