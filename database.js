@@ -1,12 +1,11 @@
 // Third-party packages
-const mysql = require('mysql2');
+const Sequalize = require('sequelize');
 
-// Initilization
-const pool = mysql.createPool({
-    host: 'localhost',
-    user: 'root',
-    database: 'node',
-    password: 'giggsroxz123'
+// Create connections to the database
+const sequalize = new Sequalize('node', 'root', 'giggsroxz123', {
+    dialect: 'mysql',
+    host: 'localhost'
 });
 
-module.exports = pool.promise();
+// Export
+module.exports = sequalize;

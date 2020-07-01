@@ -11,7 +11,7 @@
     <main>
         <% if (products.length > 0) { %>
         <div class="grid">
-            <% for (let prod of products) { %>
+            <% for (prod of products) { %>
             <article class="card product-item">
                 <header class="card__header">
                     <h1 class="product__title"><%= prod.title %></h1>

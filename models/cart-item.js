@@ -5,15 +5,19 @@ const Sequalize = require('sequelize');
 const sequalize = require('../database');
 
 // Define the table structure
-const Cart = sequalize.define('cart', {
+const CartItem = sequalize.define('cartItem', {
     id: {
         type: Sequalize.INTEGER,
         autoIncrement: true,
         allowNull: false,
         unique: true,
         primaryKey: true
+    },
+    quantity: {
+        type: Sequalize.INTEGER,
+        allowNull: false
     }
 });
 
 // Export
-module.exports = Cart;
+module.exports = CartItem;

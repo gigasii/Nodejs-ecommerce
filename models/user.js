@@ -5,15 +5,23 @@ const Sequalize = require('sequelize');
 const sequalize = require('../database');
 
 // Define the table structure
-const Cart = sequalize.define('cart', {
+const User = sequalize.define('user', {
     id: {
         type: Sequalize.INTEGER,
         autoIncrement: true,
         allowNull: false,
         unique: true,
         primaryKey: true
+    },
+    name: {
+        type: Sequalize.STRING,
+        allowNull: false
+    },
+    email: {
+        type: Sequalize.STRING,
+        allowNull: false
     }
 });
 
 // Export
-module.exports = Cart;
+module.exports = User;
