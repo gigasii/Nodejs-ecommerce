@@ -9,14 +9,8 @@ const path = require('path');
 const adminRoutes = require('./routes/admin');
 const shopRoutes = require('./routes/shop');
 const errorRoute = require('./controllers/error');
-const sequelize = require('./database');
-const Product = require('./models/product');
+const connectToDB = require('./database').connect;
 const User = require('./models/user');
-const Cart = require('./models/cart');
-const CartItem = require('./models/cart-item');
-const Order = require('./models/order');
-const OrderItem = require('./models/order-item');
-const { start } = require('repl');
 
 // Initilization
 const app = express();
@@ -31,11 +25,11 @@ app.use(bodyParser.urlencoded({ extended: false }));
 // Serving files statically middleware
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Set current user
+// Set user
 app.use((req, res, next) => {
-    User.findByPk(1)
+    User.findByID('5f00a4743b7b49c1462b7a11')
     .then(user => {
-        req.user = user;
+        req.user = new User(user._id, user.name, user.email, user.cart);
         next();
     });
 });
@@ -45,34 +39,8 @@ app.use('/admin', adminRoutes);
 app.use(shopRoutes);
 app.use(errorRoute);
 
-// Establish table relations (Create Magic methods as well)
-User.hasOne(Cart);
-Cart.belongsTo(User);
-User.hasOne(Order);
-User.hasMany(Product);
-Cart.belongsToMany(Product, {through: CartItem});
-Order.belongsToMany(Product, {through: OrderItem});
-
-// Retrive tables from database
-sequelize.sync()
-.then(() => {
-    return User.findByPk(1);
-})
-.then(user => {
-    if (!user)
-    {
-        User.create({name: 'Max', email: 'test@test.com'})
-        .then(user => user.createCart())
-        .then(cart => {
-            cart.getUser()
-            .then(user => {
-                return user.createOrder();
-            })
-        })
-    }
-    else
-    {
-        return user;
-    }
-})
-.then(() => app.listen(3000))   // Server constantly listening
+// Connect to database
+connectToDB(() => {
+    // Server constantly listening
+    app.listen(3000);
+});

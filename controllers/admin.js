@@ -2,7 +2,7 @@
 const Product = require('../models/product');
 
 exports.getProducts = (req, res, next) => {
-    req.user.getProducts()
+    Product.findAll()
     .then(products => {
         res.render('admin/product-list', {
             prods: products,
@@ -22,18 +22,13 @@ exports.getAddProduct = (req, res, next) => {
 }
 
 exports.postAddProduct = (req, res, next) => {
-    // Create (Build + Save) product to database
-    req.user.createProduct({
-        title: req.body.title,
-        price: req.body.price,
-        imageURL: req.body.imageURL,
-        description: req.body.description
-    })
+    const product = new Product(req.body.title, req.body.price, req.body.description, req.body.imageURL, null);
+    product.save()
     .then(() => res.redirect('/admin/product-list'));
 }
 
 exports.getEditProduct = (req, res, next) => {
-    Product.findByPk(req.params.productID)
+    Product.findByID(req.params.productID)
     .then(product => {
         res.render('admin/edit-product', 
         {
@@ -46,23 +41,12 @@ exports.getEditProduct = (req, res, next) => {
 }
 
 exports.postEditProduct = (req, res, next) => {
-    Product.findByPk(req.body.productID)
-    .then(product => {
-        product.title = req.body.title,
-        product.price = req.body.price;
-        product.imageURL = req.body.imageURL;
-        product.description = req.body.description;
-        // Save product to database
-        return product.save();
-    })
+    const product = new Product(req.body.title, req.body.price, req.body.description, req.body.imageURL, req.body.productID);
+    product.save()
     .then(() => res.redirect('/admin/product-list'));
 }
 
 exports.postDeleteProduct = (req, res, next) => {
-    Product.findByPk(req.body.productID)
-    .then(product => {
-        // Destroy product from database
-        return product.destroy();  
-    })
+    Product.deleteByID(req.body.productID)
     .then(() => res.redirect('/admin/product-list'));
 }
