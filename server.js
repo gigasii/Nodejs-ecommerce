@@ -1,6 +1,7 @@
 // Third-party packages
 const express = require('express');
 const bodyParser = require('body-parser');
+const mongoose = require('mongoose');
 
 // Core packages
 const path = require('path');
@@ -9,7 +10,6 @@ const path = require('path');
 const adminRoutes = require('./routes/admin');
 const shopRoutes = require('./routes/shop');
 const errorRoute = require('./controllers/error');
-const connectToDB = require('./database').connect;
 const User = require('./models/user');
 
 // Initilization
@@ -27,9 +27,9 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Set user
 app.use((req, res, next) => {
-    User.findByID('5f00a4743b7b49c1462b7a11')
+    User.findById('5f01a3305e712a29230f81ba')
     .then(user => {
-        req.user = new User(user._id, user.name, user.email, user.cart);
+        req.user = user;
         next();
     });
 });
@@ -40,7 +40,8 @@ app.use(shopRoutes);
 app.use(errorRoute);
 
 // Connect to database
-connectToDB(() => {
+mongoose.connect('mongodb+srv://giggs:123@shop.nlvcf.mongodb.net/Shop?retryWrites=true&w=majority')
+.then(result => {
     // Server constantly listening
     app.listen(3000);
 });

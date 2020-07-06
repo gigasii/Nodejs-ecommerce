@@ -2,7 +2,8 @@
 const Product = require('../models/product');
 
 exports.getProducts = (req, res, next) => {
-    Product.findAll()
+    // Get all products from collection 
+    Product.find()
     .then(products => {
         res.render('admin/product-list', {
             prods: products,
@@ -22,13 +23,20 @@ exports.getAddProduct = (req, res, next) => {
 }
 
 exports.postAddProduct = (req, res, next) => {
-    const product = new Product(req.body.title, req.body.price, req.body.description, req.body.imageURL, null);
+    const product = new Product({
+        title: req.body.title, 
+        price: req.body.price, 
+        description: req.body.description,
+        imageURL: req.body.imageURL,
+        userId: req.user._id
+    });
+    // Save new product to collection
     product.save()
     .then(() => res.redirect('/admin/product-list'));
 }
 
 exports.getEditProduct = (req, res, next) => {
-    Product.findByID(req.params.productID)
+    Product.findById(req.params.productID)
     .then(product => {
         res.render('admin/edit-product', 
         {
@@ -41,12 +49,19 @@ exports.getEditProduct = (req, res, next) => {
 }
 
 exports.postEditProduct = (req, res, next) => {
-    const product = new Product(req.body.title, req.body.price, req.body.description, req.body.imageURL, req.body.productID);
-    product.save()
+    Product.findById(req.body.productID)
+    .then(product => {
+        product.title = req.body.title; 
+        product.price = req.body.price; 
+        product.description = req.body.description;
+        product.imageURL = req.body.imageURL;
+        // If save is called on an existing product (Update)
+        return product.save();
+    })
     .then(() => res.redirect('/admin/product-list'));
 }
 
 exports.postDeleteProduct = (req, res, next) => {
-    Product.deleteByID(req.body.productID)
+    Product.findByIdAndRemove(req.body.productID)
     .then(() => res.redirect('/admin/product-list'));
 }
