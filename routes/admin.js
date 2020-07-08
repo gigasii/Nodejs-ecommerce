@@ -1,6 +1,3 @@
-// Core packages
-const path = require('path');
-
 // Third-party packages
 const express = require('express');
 
