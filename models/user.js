@@ -6,13 +6,19 @@ const Schema = mongoose.Schema;
 
 // Define the collection structure
 const userSchema = new Schema({
-    name: {
-        type: String,
-        required: true
-    },
     email: {
         type: String,
         required: true
+    },
+    password: {
+        type: String,
+        required: true
+    },
+    resetToken: {
+        type: String
+    },
+    resetTokenExpiration: {
+        type: Date
     },
     cart: {
         products: [{

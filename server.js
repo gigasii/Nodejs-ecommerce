@@ -4,6 +4,8 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const session = require('express-session');
 const MongoDbStore = require('connect-mongodb-session')(session);
+const csurf = require('csurf');
+const flash = require('connect-flash');
 
 // Core packages
 const path = require('path');
@@ -20,39 +22,33 @@ const MONGO_DB_URI = 'mongodb+srv://giggs:123@shop.nlvcf.mongodb.net/Shop?retryW
 
 // Initilization
 const app = express();
-const store = new MongoDbStore({
-    uri: MONGO_DB_URI,
-    collection: 'sessions'
-});
 
 // Templating package
 app.set('view engine', 'ejs');
-app.set('views', 'templates')
+app.set('views', 'templates');
 
-// Data parsing middleware
+// Data parsing
 app.use(bodyParser.urlencoded({ extended: false }));
 
-// Serving files statically middleware
+// Static files directory path
 app.use(express.static(path.join(__dirname, 'public')));
 
-/* 
-    Session middleware:
-    Looks for a session cookie, if found, look for a 
-    fitting session in database and load data
-*/
+// Create or use existing session
 app.use(session({
-    secret: 'my secret', 
+    secret: 'SessionSecret', 
     resave: false, 
     saveUninitialized: false,
-    store: store
+    store: new MongoDbStore({uri: MONGO_DB_URI, collection: 'sessions'})
 }));
 
 // Set user
 app.use((req, res, next) => {
+    // Session doesnt exists
     if (!req.session.user)
     {
         return next();
     }
+    // Session exists
     User.findById(req.session.user._id)
     .then(user => {
         req.user = user;
@@ -60,7 +56,21 @@ app.use((req, res, next) => {
     });
 });
 
-// Route-handling middlewares
+// Enable CSRF protection
+app.use(csurf());
+
+// Enable flashing of session variables
+app.use(flash());
+
+// Variables to be included for every request
+app.use((req, res, next) => {
+    res.locals.isAuthenticated = req.session.isLoggedIn;
+    // Generate token
+    res.locals.csrfToken = req.csrfToken();
+    next();
+});
+
+// Route-handling
 app.use('/admin', adminRoutes);
 app.use(shopRoutes);
 app.use(authRoutes);

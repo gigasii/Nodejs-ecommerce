@@ -7,7 +7,7 @@ const Schema = mongoose.Schema;
 // Define the collection structure
 const orderSchema = new Schema({
     user: {
-        name: {
+        email: {
             type: String,
             required: true
         },
