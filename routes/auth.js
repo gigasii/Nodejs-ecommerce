@@ -1,6 +1,6 @@
 // Third-party packages
 const express = require('express');
-const {body} = require('express-validator/check');
+const {body} = require('express-validator');
 
 // Imports
 const authController = require('../controllers/auth');
@@ -30,7 +30,6 @@ router.post('/signup',
                 {
                     return Promise.reject('Email already exists');
                 }
-                return true;
             });
         })
         .normalizeEmail(),
@@ -42,7 +41,7 @@ router.post('/signup',
         .custom((value, {req}) => {
             if (value != req.body.password)
             {
-                return Promise.reject('Passwords do not match');
+                throw new Error('Passwords do not match');
             }
             return true;
         })

@@ -2,7 +2,7 @@
 const bcrypt = require('bcryptjs');
 const nodemailer = require('nodemailer');
 const sendgridTransport = require('nodemailer-sendgrid-transport');
-const {validationResult} = require('express-validator/check');
+const {validationResult} = require('express-validator');
 
 // Core packages
 const crypto = require('crypto');
@@ -72,7 +72,7 @@ exports.postLogOut = (req, res, next) => {
     req.session.destroy(() => res.redirect('/products'));
 };
 
-exports.getSignUp = (req, res, next) => {
+exports.getSignUp = (req, res, next) => { 
     res.render('auth/signup', {
         path: '/signup',
         pageTitle: 'Signup',
@@ -81,12 +81,15 @@ exports.getSignUp = (req, res, next) => {
 };
 
 exports.postSignUp = (req, res, next) => {
-    // Check for validation errors
+    // Catch validation errors
     const errors = validationResult(req);
     if (!errors.isEmpty())
     {
-        req.flash('error', errors.array()[0].msg);
-        return res.redirect('/signup');
+        return res.status(422).render('auth/signup', {
+            path: '/signup',
+            pageTitle: 'Signup',
+            errorMessage: errors.array()[0].msg
+        });
     }
 
     // Hash password

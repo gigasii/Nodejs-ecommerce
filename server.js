@@ -14,7 +14,6 @@ const path = require('path');
 const adminRoutes = require('./routes/admin');
 const shopRoutes = require('./routes/shop');
 const authRoutes = require('./routes/auth');
-const errorRoute = require('./controllers/error');
 const User = require('./models/user');
 
 // Constants
@@ -74,10 +73,27 @@ app.use((req, res, next) => {
 app.use('/admin', adminRoutes);
 app.use(shopRoutes);
 app.use(authRoutes);
-app.use(errorRoute);
+
+// Page not found
+app.use((req, res, next) => {
+    res.status(404).render('status/404', 
+    {
+        pageTitle: 'Page Not Found',
+        path: '/error'
+    });
+});
+
+// Error handling
+app.use((error, req, res, next) => {
+    res.status(500).render('status/500', 
+    {
+        pageTitle: 'Server Error',
+        path: '/error'
+    });
+});
 
 // Connect to database
-mongoose.connect(MONGO_DB_URI)
+mongoose.connect(MONGO_DB_URI, {useNewUrlParser: true, useUnifiedTopology: true})
 .then(() => {
     // Server constantly listening
     app.listen(3000);
