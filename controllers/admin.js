@@ -1,5 +1,6 @@
 // Imports
 const Product = require('../models/product');
+const fileHelper = require('../middleware/file');
 
 exports.getProducts = (req, res, next) => {
     // Get all products from collection 
@@ -18,16 +19,28 @@ exports.getAddProduct = (req, res, next) => {
     {
         pageTitle: 'Add product',
         path: '/admin/add-product',
-        editing: false
+        editing: false,
+        errorMessage: false
     });
 }
 
 exports.postAddProduct = (req, res, next) => {
+    const image = req.file;
+    if (!image)
+    {
+        return res.render('admin/edit-product', 
+        {
+            pageTitle: 'Add product',
+            path: '/admin/add-product',
+            editing: false,
+            errorMessage: 'Attached file is not an image'
+        });   
+    }
     const product = new Product({
         title: req.body.title, 
         price: req.body.price, 
         description: req.body.description,
-        imageURL: req.body.imageURL,
+        imageURL: image.path,
         userId: req.user._id
     });
     // Save new product to collection
@@ -43,18 +56,24 @@ exports.getEditProduct = (req, res, next) => {
             pageTitle: 'Edit product',
             path: '/admin/edit-product',
             editing: req.query.edit,
-            product: product
+            product: product,
+            errorMessage: false
         });
     });
 }
 
 exports.postEditProduct = (req, res, next) => {
+    const image = req.file;
     Product.findById(req.body.productID)
     .then(product => {
         product.title = req.body.title; 
         product.price = req.body.price; 
         product.description = req.body.description;
-        product.imageURL = req.body.imageURL;
+        if (image)
+        {
+            fileHelper.deleteFile(product.imageURL);
+            product.imageURL = image.path;
+        }
         // If save is called on an existing product (Update)
         return product.save();
     })
@@ -62,6 +81,14 @@ exports.postEditProduct = (req, res, next) => {
 }
 
 exports.postDeleteProduct = (req, res, next) => {
-    Product.findByIdAndRemove(req.body.productID)
+    const prodId = req.body.productID;
+    Product.findById(prodId)
+    .then(product => {
+        fileHelper.deleteFile(product.imageURL);
+        return Product.deleteOne({_id: prodId});
+    })
+    .then(() => {
+        return req.user.deleteFromCart(prodId)
+    })
     .then(() => res.redirect('/admin/product-list'));
 }

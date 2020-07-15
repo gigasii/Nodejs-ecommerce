@@ -65,10 +65,10 @@ userSchema.methods.deleteFromCart = function(productId)
     const updatedCart = this.cart.products.filter(p => {
         return p.productId.toString() != productId.toString();
     })
-    // Update the cart to contain olnly the rest of the products
+    // Update the cart to contain only the rest of the products
     this.cart.products = updatedCart;
 
-   // Update this user document
+    // Update this user document
     return this.save();
 }
 

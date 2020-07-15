@@ -1,3 +1,10 @@
+// Third-party packages
+const PDFDocument = require('pdfkit');
+
+// Core packages
+const fs = require('fs');
+const path = require('path');
+
 // Imports
 const Product = require('../models/product');
 const Order = require('../models/order');
@@ -87,5 +94,39 @@ exports.postOrder = (req, res, next) => {
     return req.user.clearCart();
   })
   .then(() => res.redirect('/orders'));
+}
+
+exports.getInvoice = (req, res, next) => {
+  const orderId = req.params.orderId;
+  Order.findById(orderId)
+  .then(order => {
+    if (!order)
+    {
+      return next(new Error('No such order found'));
+    }
+    
+    const invoiceName = orderId + '-invoice.pdf';
+    const invoicePath = path.join('invoices', invoiceName);
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', 'inline; filename="' + invoiceName + '"');
+
+    // Create pdf document
+    const doc = new PDFDocument();
+    doc.pipe(fs.createWriteStream(invoicePath));
+    doc.pipe(res);
+    
+    // Write to pdf
+    doc.text('--- Order ---');
+    let totalPrice = 0;
+    order.products.forEach(prod => {
+      totalPrice += prod.quantity * prod.productData.price;
+      doc.text(prod.productData.title + ' - ' + prod.quantity + ' x ' + '$' + prod.productData.price);
+    });
+    doc.text('------'); 
+    doc.text('Total: $' + totalPrice);
+
+    // Close the pdf and save
+    doc.end();
+  });
 }
 

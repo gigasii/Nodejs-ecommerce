@@ -3,7 +3,7 @@ const express = require('express');
 
 // Imports
 const adminController = require('../controllers/admin');
-const auth = require('../middleware/util').authentication;
+const auth = require('../middleware/auth');
 
 // Initilization
 const router = express.Router();

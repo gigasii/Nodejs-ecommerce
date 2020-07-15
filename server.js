@@ -6,6 +6,7 @@ const session = require('express-session');
 const MongoDbStore = require('connect-mongodb-session')(session);
 const csurf = require('csurf');
 const flash = require('connect-flash');
+const multer = require('multer');
 
 // Core packages
 const path = require('path');
@@ -14,13 +15,26 @@ const path = require('path');
 const adminRoutes = require('./routes/admin');
 const shopRoutes = require('./routes/shop');
 const authRoutes = require('./routes/auth');
+const status = require('./controllers/status');
 const User = require('./models/user');
 
 // Constants
 const MONGO_DB_URI = 'mongodb+srv://giggs:123@shop.nlvcf.mongodb.net/Shop?retryWrites=true&w=majority';
+const imageFolderName = 'images';
 
 // Initilization
 const app = express();
+const storage = multer.diskStorage({
+    destination: (req, file, callback) => {
+        callback(null, imageFolderName);
+    },
+    filename: (req, file, callback) => {
+        callback(null, Date.now() + '-' + file.originalname);
+    }
+});
+const filter = (req, file, callback) => {
+    (file.mimetype === 'image/png' || file.mimetype === 'image/jpg' || file.mimetype === 'image/jpeg') ? callback(null, true) : callback(null, false);
+}
 
 // Templating package
 app.set('view engine', 'ejs');
@@ -28,9 +42,11 @@ app.set('views', 'templates');
 
 // Data parsing
 app.use(bodyParser.urlencoded({ extended: false }));
+app.use(multer({storage: storage, fileFilter: filter}).single('imageFile'));
 
 // Static files directory path
 app.use(express.static(path.join(__dirname, 'public')));
+app.use('/' + imageFolderName, express.static(path.join(__dirname, imageFolderName)));
 
 // Create or use existing session
 app.use(session({
@@ -73,23 +89,12 @@ app.use((req, res, next) => {
 app.use('/admin', adminRoutes);
 app.use(shopRoutes);
 app.use(authRoutes);
+app.get('/404', status.pageNotFound);
+app.get('/500', status.serverError);
 
-// Page not found
-app.use((req, res, next) => {
-    res.status(404).render('status/404', 
-    {
-        pageTitle: 'Page Not Found',
-        path: '/error'
-    });
-});
-
-// Error handling
+// Error-handling
 app.use((error, req, res, next) => {
-    res.status(500).render('status/500', 
-    {
-        pageTitle: 'Server Error',
-        path: '/error'
-    });
+    res.redirect('/500');
 });
 
 // Connect to database
