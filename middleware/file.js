@@ -2,7 +2,7 @@
 const fs = require('fs');
 
 exports.deleteFile = (filePath) => {
-    fs.unlink(filePath, (err) => {
+    fs.unlink('images\\' + filePath, (err) => {
         if (err)
         {
             throw(err);

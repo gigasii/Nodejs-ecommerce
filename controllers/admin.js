@@ -40,7 +40,7 @@ exports.postAddProduct = (req, res, next) => {
         title: req.body.title, 
         price: req.body.price, 
         description: req.body.description,
-        imageURL: image.path,
+        imageURL: image.filename,
         userId: req.user._id
     });
     // Save new product to collection
@@ -72,7 +72,7 @@ exports.postEditProduct = (req, res, next) => {
         if (image)
         {
             fileHelper.deleteFile(product.imageURL);
-            product.imageURL = image.path;
+            product.imageURL = image.filename;
         }
         // If save is called on an existing product (Update)
         return product.save();
@@ -80,8 +80,8 @@ exports.postEditProduct = (req, res, next) => {
     .then(() => res.redirect('/admin/product-list'));
 }
 
-exports.postDeleteProduct = (req, res, next) => {
-    const prodId = req.body.productID;
+exports.deleteProduct = (req, res, next) => {
+    const prodId = req.params.productId;
     Product.findById(prodId)
     .then(product => {
         fileHelper.deleteFile(product.imageURL);
@@ -90,5 +90,5 @@ exports.postDeleteProduct = (req, res, next) => {
     .then(() => {
         return req.user.deleteFromCart(prodId)
     })
-    .then(() => res.redirect('/admin/product-list'));
+    .then(() => res.status(200).json({message: 'Product deleted from server'}));
 }

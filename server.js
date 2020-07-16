@@ -33,7 +33,7 @@ const storage = multer.diskStorage({
     }
 });
 const filter = (req, file, callback) => {
-    (file.mimetype === 'image/png' || file.mimetype === 'image/jpg' || file.mimetype === 'image/jpeg') ? callback(null, true) : callback(null, false);
+    (file.mimetype === 'image/png' || file.mimetype === 'image/jpeg') ? callback(null, true) : callback(null, false);
 }
 
 // Templating package
@@ -44,9 +44,9 @@ app.set('views', 'templates');
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(multer({storage: storage, fileFilter: filter}).single('imageFile'));
 
-// Static files directory path
+// Files inside these folders are assumed to be from root
 app.use(express.static(path.join(__dirname, 'public')));
-app.use('/' + IMAGE_FOLDER_NAME, express.static(path.join(__dirname, IMAGE_FOLDER_NAME)));
+app.use(express.static(path.join(__dirname, IMAGE_FOLDER_NAME)));
 
 // Create or use existing session
 app.use(session({
@@ -89,8 +89,8 @@ app.use((req, res, next) => {
 app.use('/admin', adminRoutes);
 app.use(shopRoutes);
 app.use(authRoutes);
-app.get('/404', status.pageNotFound);
 app.get('/500', status.serverError);
+app.use(status.pageNotFound);
 
 // Error-handling
 app.use((error, req, res, next) => {
