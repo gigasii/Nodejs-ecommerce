@@ -20,13 +20,13 @@ const User = require('./models/user');
 
 // Constants
 const MONGO_DB_URI = 'mongodb+srv://giggs:123@shop.nlvcf.mongodb.net/Shop?retryWrites=true&w=majority';
-const imageFolderName = 'images';
+const IMAGE_FOLDER_NAME = 'images';
 
 // Initilization
 const app = express();
 const storage = multer.diskStorage({
     destination: (req, file, callback) => {
-        callback(null, imageFolderName);
+        callback(null, IMAGE_FOLDER_NAME);
     },
     filename: (req, file, callback) => {
         callback(null, Date.now() + '-' + file.originalname);
@@ -46,7 +46,7 @@ app.use(multer({storage: storage, fileFilter: filter}).single('imageFile'));
 
 // Static files directory path
 app.use(express.static(path.join(__dirname, 'public')));
-app.use('/' + imageFolderName, express.static(path.join(__dirname, imageFolderName)));
+app.use('/' + IMAGE_FOLDER_NAME, express.static(path.join(__dirname, IMAGE_FOLDER_NAME)));
 
 // Create or use existing session
 app.use(session({
