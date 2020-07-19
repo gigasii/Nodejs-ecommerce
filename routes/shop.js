@@ -9,7 +9,6 @@ const auth = require('../middleware/auth');
 const router = express.Router();
 
 // Set routes
-router.get('/', shopController.getIndex);
 router.get('/products', shopController.getProducts);
 router.get('/product/:productID', shopController.getProduct);
 router.get('/cart', auth, shopController.getCart);

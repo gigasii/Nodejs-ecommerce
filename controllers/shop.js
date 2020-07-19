@@ -9,13 +9,6 @@ const Order = require('../models/order');
 // Constants
 const ITEMS_PER_PAGE = 2;
 
-exports.getIndex = (req, res, next) => {
-    res.render('shop/index', {
-        pageTitle: 'Shop',
-        path: '/'
-    });
-}
-
 exports.getProducts = (req, res, next) => {
     let page = parseInt(req.query.page, 10);
     if (isNaN(page))

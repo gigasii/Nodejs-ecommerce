@@ -57,21 +57,6 @@ app.use(session({
     store: new MongoDbStore({uri: MONGO_DB_URI, collection: 'sessions'})
 }));
 
-// Set user
-app.use((req, res, next) => {
-    // Session doesnt exists
-    if (!req.session.user)
-    {
-        return next();
-    }
-    // Session exists
-    User.findById(req.session.user._id)
-    .then(user => {
-        req.user = user;
-        next();
-    });
-});
-
 // Enable CSRF protection
 app.use(csurf());
 
@@ -79,7 +64,13 @@ app.use(csurf());
 app.use(flash());
 
 // Variables to be included for every request
-app.use((req, res, next) => {
+app.use(async (req, res, next) => {
+    // Set user
+    if (req.session.user)
+    {
+        let user = await User.findById(req.session.user._id);
+        req.user = user; 
+    }
     res.locals.isAuthenticated = req.session.isLoggedIn;
     // Generate token
     res.locals.csrfToken = req.csrfToken();
@@ -101,6 +92,6 @@ app.use((error, req, res, next) => {
 // Connect to database
 mongoose.connect(MONGO_DB_URI, {useNewUrlParser: true, useUnifiedTopology: true})
 .then(() => {
-    // Server constantly listening
+    // Server constantly listening for incoming requests
     app.listen(3000);
 });
