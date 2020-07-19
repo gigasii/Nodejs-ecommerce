@@ -15,25 +15,21 @@
                     <li class="cart__item">
                         <h1><%= product.productId.title %></h1>
                         <h2>Quantity: <%= product.quantity %></h2>
-                        <form action="/cart-delete-item" method="POST">
-                            <input type="hidden" name="productID" value="<%= product.productId._id %>">
-                            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-                            <button class="btn" type="submit">Delete</button>
-                        </form>
+                        <input type="hidden" name="productID" value="<%= product.productId._id %>">
+                        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                        <button class="btn" onclick="deleteCartProduct(this)">Delete</button>
                     </li>
                 <% }); %>
             </ul>
             <hr>
             <div class="centered">
-                <form action="/create-order" method="POST">
-                    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-                    <button type="submit" class="btn">Order</button>
-                </form>
+                <a class="btn" href="/checkout">ORDER</a>
             </div>          
         <% } else { %>
             <h1>No products</h1>
         <% } %>
     </main>
+    <script src="/js/deletion.js"></script>
 </body>
 
 </html>

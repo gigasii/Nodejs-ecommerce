@@ -11,7 +11,7 @@ const crypto = require('crypto');
 const User = require("../models/user");
 
 // Constants
-const sender = 'gigasii2856@gmail.com';
+const SENDER_EMAIL = 'gigasii2856@gmail.com';
 
 // Intialization
 const transporter = nodemailer.createTransport(sendgridTransport({
@@ -81,7 +81,7 @@ exports.getSignUp = (req, res, next) => {
 };
 
 exports.postSignUp = (req, res, next) => {
-    // Catch validation errors
+    // Build-in validation
     const errors = validationResult(req);
     if (!errors.isEmpty())
     {
@@ -92,26 +92,42 @@ exports.postSignUp = (req, res, next) => {
         });
     }
 
-    // Hash password
-    bcrypt.hash(req.body.password, 12)
-    .then(hashedPw => {
-        // New user
-        const newUser = new User({
-            email: req.body.email,
-            password: hashedPw,
-            cart: { products: [] }
+    // Custom validation, if successful, create user
+    User.findOne({email: req.body.email})
+    .then(user => {
+        if (user)
+        {
+            req.flash('error', 'Email already exists');
+            return res.redirect('/signup');
+        }
+
+        if (req.body.password != req.body.confirmPassword)
+        {
+            req.flash('error', 'Passwords do not match');
+            return res.redirect('/signup');
+        }
+
+        // Hash password
+        bcrypt.hash(req.body.password, 12)
+        .then(hashedPw => {
+            // New user
+            const newUser = new User({
+                email: req.body.email,
+                password: hashedPw,
+                cart: {products: []}
+            });
+            return newUser.save();
+        })
+        .then(() => {
+            // Send confirmation email
+            transporter.sendMail({
+                to: req.body.email,
+                from: SENDER_EMAIL,
+                subject: 'Sign up confirmation',
+                html: '<h1>You have successfully signed up.</h1>'
+            });
+            res.redirect('/login');
         });
-        return newUser.save();
-    })
-    .then(() => {
-        // Send confirmation email
-        transporter.sendMail({
-            to: req.body.email,
-            from: sender,
-            subject: 'Sign up confirmation',
-            html: '<h1>You have successfully signed up.</h1>'
-        });
-        res.redirect('/login');
     });
 }
 
@@ -134,12 +150,13 @@ exports.postReset = (req, res, next) => {
                 return res.redirect('/reset');
             }
             user.resetToken = token;
+            // Specify in milliseconds
             user.resetTokenExpiration = Date.now() + 3600000;
             user.save()
             .then(() => {
                 transporter.sendMail({
                     to: req.body.email,
-                    from: sender,
+                    from: SENDER_EMAIL,
                     subject: 'Password reset',
                     html: `
                     <p>You requested a password reset</p>

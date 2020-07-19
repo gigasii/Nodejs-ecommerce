@@ -42,6 +42,7 @@ app.set('views', 'templates');
 
 // Data parsing
 app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 app.use(multer({storage: storage, fileFilter: filter}).single('imageFile'));
 
 // Files inside these folders are assumed to be from root

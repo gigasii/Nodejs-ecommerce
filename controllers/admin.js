@@ -90,5 +90,7 @@ exports.deleteProduct = (req, res, next) => {
     .then(() => {
         return req.user.deleteFromCart(prodId)
     })
-    .then(() => res.status(200).json({message: 'Product deleted from server'}));
+    .then(() => res.status(200).json({
+        message: 'Product deleted from server'
+    }));
 }

@@ -4,7 +4,6 @@ const {body} = require('express-validator');
 
 // Imports
 const authController = require('../controllers/auth');
-const User = require("../models/user");
 
 // Initilization
 const router = express.Router();
@@ -23,28 +22,11 @@ router.post('/signup',
 [
     body('email', 'Invalid email')
         .isEmail()
-        .custom(value => {
-            return User.findOne({email: value})
-            .then(user => {
-                if (user)
-                {
-                    return Promise.reject('Email already exists');
-                }
-            });
-        })
         .normalizeEmail(),
-    body('password', 'Follow password requirements')
+    body('password', 'Invalid password')
         .isLength({min: 5, max: 20})
         .isAlphanumeric()
-        .trim(),
-    body('confirmPassword')
-        .custom((value, {req}) => {
-            if (value != req.body.password)
-            {
-                throw new Error('Passwords do not match');
-            }
-            return true;
-        })
+        .trim()
 ],
 authController.postSignUp);
 
