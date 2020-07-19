@@ -1,6 +1,6 @@
 // Third-party packages
 const PDFDocument = require('pdfkit');
-const stripe = require('stripe')('sk_test_51H5piLJfaJWkpwAShz2kpy69YKo7zSgMKMlTfoJj45vvMeVSSrql95hqBMiu4RaTcihvTzGxmgc7KMKb7dJK3kds002Fa14ZQw');
+const stripe = require('stripe')(process.env.STRIPE_KEY);
 
 // Imports
 const Product = require('../models/product');

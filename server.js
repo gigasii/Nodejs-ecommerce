@@ -5,6 +5,7 @@ const mongoose = require('mongoose');
 const session = require('express-session');
 const MongoDbStore = require('connect-mongodb-session')(session);
 const csurf = require('csurf');
+const helmet = require('helmet');
 const flash = require('connect-flash');
 const multer = require('multer');
 
@@ -19,7 +20,7 @@ const status = require('./controllers/status');
 const User = require('./models/user');
 
 // Constants
-const MONGO_DB_URI = 'mongodb+srv://giggs:123@shop.nlvcf.mongodb.net/Shop?retryWrites=true&w=majority';
+const MONGO_DB_URI = `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@shop.nlvcf.mongodb.net/${process.env.MONGO_DATABASE}?retryWrites=true&w=majority`;
 const IMAGE_FOLDER_NAME = 'images';
 
 // Initilization
@@ -60,6 +61,9 @@ app.use(session({
 // Enable CSRF protection
 app.use(csurf());
 
+// Enable addtional response headers for security
+app.use(helmet());
+
 // Enable flashing of session variables
 app.use(flash());
 
@@ -93,5 +97,5 @@ app.use((error, req, res, next) => {
 mongoose.connect(MONGO_DB_URI, {useNewUrlParser: true, useUnifiedTopology: true})
 .then(() => {
     // Server constantly listening for incoming requests
-    app.listen(3000);
+    app.listen(process.env.PORT || 3000);
 });
