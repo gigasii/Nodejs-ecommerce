@@ -8,6 +8,7 @@ const csurf = require('csurf');
 const helmet = require('helmet');
 const flash = require('connect-flash');
 const multer = require('multer');
+const compression = require('compression');
 
 // Core packages
 const path = require('path');
@@ -66,6 +67,9 @@ app.use(helmet());
 
 // Enable flashing of session variables
 app.use(flash());
+
+// Enable compression of files
+app.use(compression());
 
 // Variables to be included for every request
 app.use(async (req, res, next) => {

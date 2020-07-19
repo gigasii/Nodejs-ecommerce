@@ -5,7 +5,7 @@ function deleteProduct(btn)
     const productElement = btn.closest('article');
 
     // Define a URL to send a http request
-    fetch('/admin/product/' + prodId, {
+    fetch("product/" + prodId, {
         method: 'DELETE',
         headers: {
             'CSRF-Token': csrf
@@ -28,7 +28,7 @@ function deleteCartProduct(btn)
     const productElement = btn.closest('li');
 
     // Define a URL to send a http request
-    fetch('/delete-cart-product', {
+    fetch("delete-cart-product", {
         method: 'DELETE',
         headers: {
             'Content-Type': 'application/json',
