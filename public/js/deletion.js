@@ -1,5 +1,5 @@
-let host = "http://localhost:3000/";
-//let host = "https://nodeshop-giggs.herokuapp.com/";
+//let host = "http://localhost:3000/";
+let host = "https://nodeshop-giggs.herokuapp.com/";
 
 function deleteProduct(btn)
 {
