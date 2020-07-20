@@ -6,10 +6,9 @@
   "author": "Giggs",
   "scripts": {
     "start": "node server.js",
-    "start-dev": "nodemon server.js"
+    "dev": "nodemon server.js"
   },
   "devDependencies": {
-    "dotenv": "^8.2.0",
     "nodemon": "^2.0.4"
   },
   "dependencies": {

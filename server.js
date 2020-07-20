@@ -9,7 +9,6 @@ const helmet = require('helmet');
 const flash = require('connect-flash');
 const multer = require('multer');
 const compression = require('compression');
-const dotenv = require('dotenv');
 
 // Core packages
 const path = require('path');
@@ -20,9 +19,6 @@ const shopRoutes = require('./routes/shop');
 const authRoutes = require('./routes/auth');
 const status = require('./controllers/status');
 const User = require('./models/user');
-
-// Enable use of environment variables
-dotenv.config();
 
 // Constants
 const MONGO_DB_URI = `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@shop.nlvcf.mongodb.net/${process.env.MONGO_DATABASE}?retryWrites=true&w=majority`;

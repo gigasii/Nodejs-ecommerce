@@ -1,2 +1,4 @@
 ﻿.vscode
+.env
 node_modules
+nodemon.json
