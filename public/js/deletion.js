@@ -13,6 +13,7 @@ function deleteProduct()
     fetch(host + "admin/product/" + prodId, {
         method: 'DELETE',
         headers: {
+            'Content-Type': 'application/json',
             'CSRF-Token': csrf
         }
     })
@@ -23,7 +24,7 @@ function deleteProduct()
     .then(resData => {
         console.log(resData.message);
         productElement.parentNode.removeChild(productElement);
-    })
+    });
 };
 
 function deleteCartProduct()
@@ -48,5 +49,5 @@ function deleteCartProduct()
     .then(resData => {
         console.log(resData.message);
         productElement.remove();
-    })
+    });
 }
