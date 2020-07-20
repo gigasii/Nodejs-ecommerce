@@ -84,7 +84,7 @@ exports.deleteProduct = (req, res, next) => {
     const prodId = req.body.productID;
     Product.findById(prodId)
     .then(product => {
-        fileHelper.deleteFile(product.imageURL);
+        //fileHelper.deleteFile(product.imageURL);
         return Product.deleteOne({_id: prodId});
     })
     .then(() => {

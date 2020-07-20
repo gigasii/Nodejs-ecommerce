@@ -20,10 +20,10 @@ function deleteProduct(btn)
     })
     // Recieve response
     .then(res => {
-        return res.text();
+        return res.json();
     })
-    .then(text => {
-        console.log(text);
+    .then(resData => {
+        console.log(resData.message);
         productElement.parentNode.removeChild(productElement);
     })
     .catch(err => {
