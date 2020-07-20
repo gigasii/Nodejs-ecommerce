@@ -11,6 +11,7 @@ function deleteProduct(btn)
     fetch(host + "admin/product/" + prodId, {
         method: 'DELETE',
         headers: {
+            'Content-Type': 'application/json',
             'Accept': 'application/json',
             'CSRF-Token': csrf
         }
