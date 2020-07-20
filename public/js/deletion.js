@@ -1,4 +1,4 @@
-//let host = "http://localhost:3000";
+//let host = "http://localhost:3000/";
 let host = "https://nodeshop-giggs.herokuapp.com/";
 
 let btn = document.getElementById("button");
@@ -10,7 +10,7 @@ function deleteProduct()
     const productElement = btn.closest('article');
 
     // Define a URL to send a http request
-    fetch(host + "/admin/product/" + prodId, {
+    fetch(host + "admin/product/" + prodId, {
         method: 'DELETE',
         headers: {
             'CSRF-Token': csrf
@@ -31,7 +31,7 @@ function deleteCartProduct()
     const productElement = btn.closest('li');
 
     // Define a URL to send a http request
-    fetch(host + "/delete-cart-product", {
+    fetch(host + "delete-cart-product", {
         method: 'DELETE',
         headers: {
             'Content-Type': 'application/json',
