@@ -1,19 +1,17 @@
 //let host = "http://localhost:3000/";
 let host = "https://nodeshop-giggs.herokuapp.com/";
 
-let btn = document.getElementById("button");
-let prodId = btn.parentNode.querySelector('[name=productID]').value;
-let csrf = btn.parentNode.querySelector('[name=_csrf]').value;
-
-function deleteProduct()
+function deleteProduct(btn)
 {
+    let prodId = btn.parentNode.querySelector('[name=productID]').value;
+    let csrf = btn.parentNode.querySelector('[name=_csrf]').value;
     const productElement = btn.closest('article');
 
     // Define a URL to send a http request
     fetch(host + "admin/product/" + prodId, {
         method: 'DELETE',
         headers: {
-            'Content-Type': 'application/json',
+            'Accept': 'application/json',
             'CSRF-Token': csrf
         }
     })
@@ -27,8 +25,10 @@ function deleteProduct()
     });
 };
 
-function deleteCartProduct()
+function deleteCartProduct(btn)
 {
+    let prodId = btn.parentNode.querySelector('[name=productID]').value;
+    let csrf = btn.parentNode.querySelector('[name=_csrf]').value;
     const productElement = btn.closest('li');
 
     // Define a URL to send a http request
@@ -36,6 +36,7 @@ function deleteCartProduct()
         method: 'DELETE',
         headers: {
             'Content-Type': 'application/json',
+            'Accept': 'application/json',
             'CSRF-Token': csrf
         },
         body: JSON.stringify({

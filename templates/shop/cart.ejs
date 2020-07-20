@@ -17,7 +17,7 @@
                         <h2>Quantity: <%= product.quantity %></h2>
                         <input type="hidden" name="productID" value="<%= product.productId._id %>">
                         <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-                        <button class="btn" id="button" onclick="deleteCartProduct(this)">Delete</button>
+                        <button class="btn" onclick="deleteCartProduct(this)">Delete</button>
                     </li>
                 <% }); %>
             </ul>
