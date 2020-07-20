@@ -8,11 +8,15 @@ function deleteProduct(btn)
     const productElement = btn.closest('article');
 
     // Define a URL to send a http request
-    fetch(host + "admin/product/" + prodId, {
+    fetch(host + "admin/delete-product", {
         method: 'DELETE',
         headers: {
+            'Content-Type': 'application/json',
             'CSRF-Token': csrf
-        }
+        },
+        body: JSON.stringify({
+            productID: prodId
+        })
     })
     // Recieve response
     .then(res => {

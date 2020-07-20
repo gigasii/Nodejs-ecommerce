@@ -81,7 +81,7 @@ exports.postEditProduct = (req, res, next) => {
 }
 
 exports.deleteProduct = (req, res, next) => {
-    const prodId = req.params.productId;
+    const prodId = req.body.productID;
     Product.findById(prodId)
     .then(product => {
         fileHelper.deleteFile(product.imageURL);
