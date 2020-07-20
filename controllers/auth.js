@@ -57,7 +57,7 @@ exports.postLogIn = (req, res, next) => {
                 req.session.isLoggedIn = true;
                 req.session.user = user;
                 return req.session.save(() => {
-                    res.redirect('/products')
+                    res.redirect('/')
                 });
             }
             // Password doesnt match
@@ -69,7 +69,7 @@ exports.postLogIn = (req, res, next) => {
 
 exports.postLogOut = (req, res, next) => {
     // Destroy all session variables
-    req.session.destroy(() => res.redirect('/products'));
+    req.session.destroy(() => res.redirect('/'));
 };
 
 exports.getSignUp = (req, res, next) => { 

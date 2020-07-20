@@ -1,8 +1,0 @@
-{
-    "env": {
-        "MONGO_USER": "giggs",
-        "MONGO_PASSWORD": 123,
-        "MONGO_DATABASE": "Shop",
-        "STRIPE_KEY": "sk_test_51H5piLJfaJWkpwAShz2kpy69YKo7zSgMKMlTfoJj45vvMeVSSrql95hqBMiu4RaTcihvTzGxmgc7KMKb7dJK3kds002Fa14ZQw"
-    }
-}

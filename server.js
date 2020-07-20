@@ -9,6 +9,7 @@ const helmet = require('helmet');
 const flash = require('connect-flash');
 const multer = require('multer');
 const compression = require('compression');
+const dotenv = require('dotenv');
 
 // Core packages
 const path = require('path');
@@ -20,6 +21,9 @@ const authRoutes = require('./routes/auth');
 const status = require('./controllers/status');
 const User = require('./models/user');
 
+// Enable use of environment variables
+dotenv.config();
+
 // Constants
 const MONGO_DB_URI = `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@shop.nlvcf.mongodb.net/${process.env.MONGO_DATABASE}?retryWrites=true&w=majority`;
 const IMAGE_FOLDER_NAME = 'images';
@@ -27,16 +31,10 @@ const IMAGE_FOLDER_NAME = 'images';
 // Initilization
 const app = express();
 const storage = multer.diskStorage({
-    destination: (req, file, callback) => {
-        callback(null, IMAGE_FOLDER_NAME);
-    },
-    filename: (req, file, callback) => {
-        callback(null, Date.now() + '-' + file.originalname);
-    }
+    destination: (req, file, callback) => callback(null, IMAGE_FOLDER_NAME),
+    filename: (req, file, callback) => callback(null, Date.now() + '-' + file.originalname)
 });
-const filter = (req, file, callback) => {
-    (file.mimetype === 'image/png' || file.mimetype === 'image/jpeg') ? callback(null, true) : callback(null, false);
-}
+const filter = (req, file, callback) => (file.mimetype === 'image/png' || file.mimetype === 'image/jpeg') ? callback(null, true) : callback(null, false)
 
 // Templating package
 app.set('view engine', 'ejs');
