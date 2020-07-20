@@ -92,5 +92,8 @@ exports.deleteProduct = (req, res, next) => {
     })
     .then(() => res.status(200).json({
         message: 'Product deleted from server'
-    }));
+    }))
+    .catch(err => {
+        next(err);
+    });
 }

@@ -20,13 +20,15 @@ function deleteProduct(btn)
     })
     // Recieve response
     .then(res => {
-        console.log(res);
-        return res.json();
+        return res.text();
     })
-    .then(resData => {
-        console.log(resData.message);
+    .then(text => {
+        console.log(text);
         productElement.parentNode.removeChild(productElement);
-    });
+    })
+    .catch(err => {
+        next(err);
+    })
 };
 
 function deleteCartProduct(btn)
