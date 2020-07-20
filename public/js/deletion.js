@@ -1,5 +1,5 @@
-//let host = "http://localhost:3000/";
-let host = "https://nodeshop-giggs.herokuapp.com/";
+let host = "http://localhost:3000/";
+//let host = "https://nodeshop-giggs.herokuapp.com/";
 
 function deleteProduct(btn)
 {
@@ -11,13 +11,12 @@ function deleteProduct(btn)
     fetch(host + "admin/product/" + prodId, {
         method: 'DELETE',
         headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
             'CSRF-Token': csrf
         }
     })
     // Recieve response
     .then(res => {
+        console.log(res);
         return res.json();
     })
     .then(resData => {
@@ -37,7 +36,6 @@ function deleteCartProduct(btn)
         method: 'DELETE',
         headers: {
             'Content-Type': 'application/json',
-            'Accept': 'application/json',
             'CSRF-Token': csrf
         },
         body: JSON.stringify({
