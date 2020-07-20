@@ -28,7 +28,7 @@ exports.getProducts = (req, res, next) => {
 		res.render('shop/product-list', {
 			products: products,
 			pageTitle: 'All products',
-            path: '/products',
+            path: '/',
             hasNextPage: (ITEMS_PER_PAGE * page) < totalProds,
             hasPreviousPage: page > 1,
             nextPage: page + 1,
@@ -43,7 +43,7 @@ exports.getProduct = (req, res, next) => {
         res.render('shop/product-detail', {
             product: product,
             pageTitle: product.title,
-            path: '/products'
+            path: '/product'
         });
     });
 }
