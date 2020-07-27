@@ -71,7 +71,7 @@ exports.postEditProduct = (req, res, next) => {
         product.description = req.body.description;
         if (image)
         {
-            //fileHelper.deleteFile(product.imageURL);
+            fileHelper.deleteFile(product.imageURL);
             product.imageURL = image.filename;
         }
         // If save is called on an existing product (Update)
@@ -84,7 +84,7 @@ exports.deleteProduct = (req, res, next) => {
     const prodId = req.params.productID;
     Product.findById(prodId)
     .then(product => {
-        //fileHelper.deleteFile(product.imageURL);
+        fileHelper.deleteFile(product.imageURL);
         return Product.deleteOne({_id: prodId});
     })
     .then(() => {

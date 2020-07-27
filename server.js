@@ -21,7 +21,7 @@ const status = require('./controllers/status');
 const User = require('./models/user');
 
 // Constants
-const MONGO_DB_URI = `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@shop.nlvcf.mongodb.net/${process.env.MONGO_DATABASE}?retryWrites=true&w=majority`;
+const MONGO_DB_URI = `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@cluster0.nlvcf.mongodb.net/${process.env.MONGO_DATABASE}?retryWrites=true&w=majority`;
 
 // Initilization
 const app = express();
@@ -68,11 +68,10 @@ app.use(async (req, res, next) => {
     // Set user
     if (req.session.user)
     {
-        let user = await User.findById(req.session.user._id);
-        req.user = user; 
+        req.user = await User.findById(req.session.user._id);
     }
+    // Variables only available in views
     res.locals.isAuthenticated = req.session.isLoggedIn;
-    // Generate token
     res.locals.csrfToken = req.csrfToken();
     next();
 });
